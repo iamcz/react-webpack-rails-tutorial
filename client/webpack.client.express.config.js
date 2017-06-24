@@ -10,8 +10,13 @@ const config = require('./webpack.client.base.config');
 
 const hotPort = process.env.HOT_PORT || 4000;
 
-config.entry.vendor.push('bootstrap-loader');
-config.entry.app.push(
+const { resolve } = require('path');
+const configPath = resolve('..', 'config');
+const webpackConfigLoader = require('react-on-rails/webpackConfigLoader');
+const { webpackOutputPath } = webpackConfigLoader(configPath);
+
+config.entry['vendor-bundle'].push('bootstrap-loader');
+config.entry['app-bundle'].push(
 
   // Shouldn't be necessary:
   // https://github.com/shakacode/react_on_rails/issues/504
@@ -26,7 +31,7 @@ config.output = {
 
   // this file is served directly by webpack
   filename: '[name].js',
-  path: __dirname,
+  path: webpackOutputPath,
 };
 config.plugins.unshift(
   new webpack.HotModuleReplacementPlugin(),
